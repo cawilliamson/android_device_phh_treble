@@ -232,6 +232,29 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_PACKAGES += phh-ota
 
+# prebuilt bootanimation; installs to /system/media/bootanimation.zip, the
+# default path the bootanimation binary reads. entries must stay stored
+# (uncompressed) -- BootAnimation skips deflated frame entries entirely.
+# the trebledroid dynamic-resize patch scales it to the device screen.
+PRODUCT_COPY_FILES += \
+    device/phh/treble/bootanimation.zip:system/media/bootanimation.zip
+
+# restlessos default wallpapers, art by ziednaga (cc by-nc 4.0); wired into
+# the wallpaper service via ro.config.wallpaper / ro.config.lock_wallpaper
+PRODUCT_COPY_FILES += \
+    device/phh/treble/wallpapers/LICENSE:system/etc/wallpaper/LICENSE \
+    device/phh/treble/wallpapers/RestlessStars-Homescreen-Dark.webp:system/etc/wallpaper/RestlessStars-Homescreen-Dark.webp \
+    device/phh/treble/wallpapers/RestlessStars-Lock-Dark.webp:system/etc/wallpaper/RestlessStars-Lock-Dark.webp
+
+PRODUCT_SYSTEM_PROPERTIES += \
+    ro.config.wallpaper=/system/etc/wallpaper/RestlessStars-Homescreen-Dark.webp \
+    ro.config.lock_wallpaper=/system/etc/wallpaper/RestlessStars-Lock-Dark.webp
+
+# wallpaper picker and additional on-device wallpaper options (rom 0004)
+PRODUCT_PACKAGES += \
+    WallpaperPicker2 \
+    RestlessWallpapers
+
 PRODUCT_PACKAGES += \
     xiaomi-touch
 

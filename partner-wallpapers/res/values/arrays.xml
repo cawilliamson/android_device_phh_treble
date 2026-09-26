@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- additional on-device wallpaper options in WallpaperPicker2; each name
+         must have a matching <name>_small thumbnail drawable -->
+    <string-array name="partner_wallpapers" translatable="false">
+        <item>restlessstars_light</item>
+        <item>restlessstars_homescreen_light</item>
+        <item>restlessstars_lockscreen_light</item>
+        <item>restlessstars_lockscreen_dark</item>
+    </string-array>
+</resources>

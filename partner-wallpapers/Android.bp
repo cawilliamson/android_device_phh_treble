@@ -1,0 +1,10 @@
+package = "com.restlessos.partner.wallpapers"
+
+android_app {
+    name: "RestlessWallpapers",
+    srcs: ["src/**/*.java"],
+    resource_dirs: ["res"],
+    manifest: "AndroidManifest.xml",
+    sdk_version: "current",
+    export_package_resources: true,
+}
