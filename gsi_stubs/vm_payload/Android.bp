@@ -1,0 +1,17 @@
+// vendored from packages/modules/Virtualization/libs/libvm_payload. the
+// virtualization sources are excluded from the gsi manifest sync but
+// external/icing builds against the vm payload entry point headers, so
+// the public header module is reproduced here.
+
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+cc_library_headers {
+    name: "vm_payload_headers",
+    defaults: ["avf_build_flags_cc"],
+    apex_available: ["//apex_available:anyapex"],
+    export_include_dirs: ["include"],
+    visibility: ["//visibility:public"],
+    min_sdk_version: "33",
+}

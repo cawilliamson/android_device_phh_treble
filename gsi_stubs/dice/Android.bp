@@ -1,0 +1,204 @@
+// vendored from packages/modules/Virtualization/libs/dice/open_dice. the
+// virtualization sources are excluded from the gsi manifest sync but
+// external/gsc-utils boot_param_test, the software_defined_vehicle
+// test_dice_artifacts_builder and the system/authgraph tests link against
+// the diced_open_dice crate, so both variants and their bindgen modules
+// are reproduced here. the c libraries they bind live in external/open-dice.
+
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+rust_defaults {
+    name: "libdiced_open_dice_defaults",
+    crate_name: "diced_open_dice",
+    defaults: ["avf_build_flags_rust"],
+    srcs: ["src/lib.rs"],
+}
+
+rust_library {
+    name: "libdiced_open_dice_multialg",
+    defaults: ["libdiced_open_dice_defaults"],
+    host_supported: true,
+    vendor_available: true,
+    rustlibs: [
+        "libcoset",
+        "libopen_dice_android_bindgen_multialg",
+        "libopen_dice_cbor_bindgen_multialg",
+        "libzeroize",
+    ],
+    features: [
+        "std",
+        "multialg",
+    ],
+    shared_libs: [
+        "libcrypto",
+    ],
+    visibility: [
+        "//system/software_defined_vehicle:__subpackages__",
+        "//external/gsc-utils:__subpackages__",
+    ],
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.virt",
+    ],
+    min_sdk_version: "35",
+}
+
+rust_library {
+    name: "libdiced_open_dice",
+    defaults: ["libdiced_open_dice_defaults"],
+    host_supported: true,
+    vendor_available: true,
+    rustlibs: [
+        "libcoset",
+        "libopen_dice_android_bindgen",
+        "libopen_dice_cbor_bindgen",
+        "libserde",
+        "libserde_bytes",
+        "libzeroize",
+    ],
+    features: [
+        "serde_derive",
+        "std",
+    ],
+    proc_macros: ["libserde_derive"],
+    shared_libs: [
+        "libcrypto",
+    ],
+    visibility: [
+        "//hardware/interfaces/security/secretkeeper/aidl/vts",
+        "//system/authgraph/tests:__subpackages__",
+        "//system/secretkeeper/client:__subpackages__",
+        "//system/software_defined_vehicle:__subpackages__",
+    ],
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.virt",
+    ],
+    min_sdk_version: "35",
+}
+
+rust_defaults {
+    name: "libopen_dice.rust_defaults",
+    host_supported: true,
+    vendor_available: true,
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.compos",
+        "com.android.virt",
+    ],
+}
+
+rust_defaults {
+    name: "libopen_dice_cbor_bindgen.rust_defaults",
+    wrapper_src: "bindgen/dice/dice.h",
+    crate_name: "open_dice_cbor_bindgen",
+    source_stem: "bindings",
+    bindgen_flags: [
+        "--rustified-enum DiceConfigType",
+        "--rustified-enum DiceMode",
+        "--rustified-enum DiceResult",
+        "--rustified-enum DicePrincipal",
+
+        // generate only essential functions to keep the bindings concise
+        "--allowlist-function=DiceDeriveCdiPrivateKeySeed",
+        "--allowlist-function=DiceDeriveCdiCertificateId",
+        "--allowlist-function=DiceMainFlow",
+        "--allowlist-function=DiceHash",
+        "--allowlist-function=DiceKdf",
+        "--allowlist-function=DiceKeypairFromSeed",
+        "--allowlist-function=DiceSign",
+        "--allowlist-function=DiceCoseSignAndEncodeSign1",
+        "--allowlist-function=DiceVerify",
+        "--allowlist-function=DiceGenerateCertificate",
+
+        // constants used by the generated bindings
+        "--allowlist-var=DICE_CDI_SIZE",
+        "--allowlist-var=DICE_HASH_SIZE",
+        "--allowlist-var=DICE_HIDDEN_SIZE",
+        "--allowlist-var=DICE_INLINE_CONFIG_SIZE",
+        "--allowlist-var=DICE_PRIVATE_KEY_SEED_SIZE",
+        "--allowlist-var=DICE_ID_SIZE",
+        "--allowlist-var=DICE_PRIVATE_KEY_BUFFER_SIZE",
+    ],
+}
+
+rust_bindgen {
+    name: "libopen_dice_cbor_bindgen_multialg",
+    defaults: [
+        "libopen_dice.rust_defaults",
+        "libopen_dice_cbor_bindgen.rust_defaults",
+    ],
+    bindgen_flags: [
+        "--rustified-enum DiceKeyAlgorithm",
+        "--allowlist-type=DiceContext",
+    ],
+    whole_static_libs: ["libopen_dice_cbor_multialg"],
+    shared_libs: ["libcrypto"],
+    min_sdk_version: "35",
+}
+
+rust_bindgen {
+    name: "libopen_dice_cbor_bindgen",
+    defaults: [
+        "libopen_dice.rust_defaults",
+        "libopen_dice_cbor_bindgen.rust_defaults",
+    ],
+    whole_static_libs: ["libopen_dice_cbor"],
+    shared_libs: ["libcrypto"],
+    min_sdk_version: "35",
+}
+
+rust_defaults {
+    name: "libopen_dice_android_bindgen.rust_defaults",
+    wrapper_src: "bindgen/android/android.h",
+    crate_name: "open_dice_android_bindgen",
+    source_stem: "bindings",
+    bindgen_flags: [
+        // generate only essential functions to keep the bindings concise
+        "--allowlist-function=DiceAndroidFormatConfigDescriptor",
+        "--allowlist-function=DiceAndroidMainFlow",
+        "--allowlist-function=DiceAndroidHandoverMainFlow",
+        "--allowlist-function=DiceAndroidHandoverParse",
+
+        // constants used by the generated bindings
+        "--allowlist-var=DICE_ANDROID_CONFIG_.*",
+
+        // prevent duplicate generation of types shared with the cbor bindings
+        "--blocklist-type=DiceInputValues_",
+        "--blocklist-type=DiceInputValues",
+        "--raw-line",
+        "pub use open_dice_cbor_bindgen::DiceInputValues;",
+
+        "--blocklist-type=DiceResult",
+        "--raw-line",
+        "pub use open_dice_cbor_bindgen::DiceResult;",
+    ],
+}
+
+rust_bindgen {
+    name: "libopen_dice_android_bindgen_multialg",
+    defaults: [
+        "libopen_dice.rust_defaults",
+        "libopen_dice_android_bindgen.rust_defaults",
+    ],
+    rustlibs: [
+        "libopen_dice_cbor_bindgen_multialg",
+    ],
+    whole_static_libs: ["libopen_dice_android_multialg"],
+    min_sdk_version: "35",
+}
+
+rust_bindgen {
+    name: "libopen_dice_android_bindgen",
+    defaults: [
+        "libopen_dice.rust_defaults",
+        "libopen_dice_android_bindgen.rust_defaults",
+    ],
+    rustlibs: [
+        "libopen_dice_cbor_bindgen",
+    ],
+    whole_static_libs: ["libopen_dice_android"],
+    min_sdk_version: "35",
+}

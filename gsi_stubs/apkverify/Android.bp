@@ -1,0 +1,38 @@
+// vendored from packages/modules/Virtualization/libs/apkverify. the
+// virtualization sources are excluded from the gsi manifest sync but the
+// software_defined_vehicle update manager agent links against the crate,
+// so it is reproduced here with the test modules dropped.
+
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+rust_defaults {
+    name: "libapkverify.defaults",
+    crate_name: "apkverify",
+    defaults: ["avf_build_flags_rust"],
+    srcs: ["src/lib.rs"],
+    edition: "2021",
+    rustlibs: [
+        "libanyhow",
+        "libapkzip",
+        "libbyteorder",
+        "libbytes",
+        "libhex",
+        "liblog_rust",
+        "libnum_traits",
+        "libopenssl",
+        "libserde",
+    ],
+    proc_macros: ["libnum_derive"],
+}
+
+rust_library {
+    name: "libapkverify",
+    defaults: ["libapkverify.defaults"],
+    host_supported: true,
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.virt",
+    ],
+}

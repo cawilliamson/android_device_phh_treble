@@ -1,0 +1,78 @@
+// vendored from packages/modules/Virtualization/libs/android_display_backend.
+// the virtualization sources are excluded from the gsi manifest sync but
+// the crosvm gpu_display crate links against the android display client,
+// so the aidl interface and the client library are reproduced here.
+
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+aidl_interface {
+    name: "libcrosvm_android_display_service",
+    srcs: [
+        "aidl/android/crosvm/DisplayConfig.aidl",
+        "aidl/android/crosvm/ICrosvmAndroidDisplayService.aidl",
+    ],
+    include_dirs: [
+        "frameworks/native/aidl/gui",
+    ],
+    local_include_dir: "aidl",
+    unstable: true,
+    backend: {
+        java: {
+            enabled: true,
+            apex_available: [
+                "com.android.virt",
+            ],
+        },
+        cpp: {
+            enabled: false,
+        },
+        rust: {
+            enabled: false,
+        },
+        ndk: {
+            enabled: true,
+            additional_shared_libraries: [
+                "libnativewindow",
+            ],
+            apex_available: [
+                "//apex_available:platform",
+                "com.android.virt",
+            ],
+        },
+    },
+    visibility: ["//visibility:public"],
+}
+
+cc_library_static {
+    name: "libcrosvm_android_display_client",
+    srcs: [
+        "crosvm_android_display_client.cpp",
+        // libmediandk is dlopen'd rather than linked (see media_codec_abi.h), so the H.264
+        // encoder adds a source file and no dependency.
+        "media_codec_dl.cpp",
+        "surface_control_dl.cpp",
+    ],
+    whole_static_libs: [
+        "libcrosvm_android_display_service-ndk",
+    ],
+    static_libs: [
+        "libbase",
+    ],
+    header_libs: [
+        "libcutils_headers",
+        "libgfxstream_thirdparty_vulkan_headers",
+    ],
+    shared_libs: [
+        "libbinder_ndk",
+        "libcutils",
+        "libdl",
+        "libnativewindow",
+    ],
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.virt",
+    ],
+    visibility: ["//visibility:public"],
+}

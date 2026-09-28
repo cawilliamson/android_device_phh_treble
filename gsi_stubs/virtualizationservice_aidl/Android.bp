@@ -1,0 +1,64 @@
+// vendored from packages/modules/Virtualization/android/virtualizationservice/aidl.
+// the virtualization sources are excluded from the gsi manifest sync but
+// frameworks/native links the servicemanager rpc library against
+// android.system.virtualmachineservice, so the virtualmachineservice and
+// virtualizationcommon interfaces are reproduced here with the backends
+// used outside the virtualization tree enabled.
+
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+aidl_interface {
+    name: "android.system.virtualmachineservice",
+    srcs: ["android/system/virtualmachineservice/**/*.aidl"],
+    imports: [
+        "android.hardware.security.secretkeeper-V2",
+        "android.system.virtualizationcommon",
+        "rpc_servicemanager_aidl",
+    ],
+    unstable: true,
+    backend: {
+        java: {
+            enabled: false,
+        },
+        rust: {
+            enabled: true,
+            apex_available: [
+                "com.android.virt",
+                "com.android.compos",
+            ],
+        },
+    },
+    visibility: ["//visibility:public"],
+}
+
+aidl_interface {
+    name: "android.system.virtualizationcommon",
+    srcs: ["android/system/virtualizationcommon/**/*.aidl"],
+    unstable: true,
+    backend: {
+        java: {
+            sdk_version: "module_current",
+            apex_available: [
+                "com.android.virt",
+                "//apex_available:platform",
+            ],
+        },
+        ndk: {
+            apex_available: [
+                "com.android.virt",
+                "com.android.compos",
+            ],
+        },
+        rust: {
+            enabled: true,
+            apex_available: [
+                "//apex_available:platform",
+                "com.android.virt",
+                "com.android.compos",
+            ],
+        },
+    },
+    visibility: ["//visibility:public"],
+}

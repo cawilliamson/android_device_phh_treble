@@ -1,0 +1,23 @@
+// vendored from packages/modules/Virtualization tests/pvmfw. the
+// virtualization sources are excluded from the gsi manifest sync but the
+// trusty pvmfw test image generator still references the packaging tool.
+
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+java_library_host {
+    name: "PvmfwHostTestLib",
+    srcs: ["java/**/*.java"],
+    static_libs: [
+        "androidx.annotation_annotation",
+        "truth",
+    ],
+}
+
+java_binary_host {
+    name: "pvmfw-tool",
+    manifest: "pvmfw-tool-manifest.txt",
+    srcs: ["PvmfwTool.java"],
+    static_libs: ["PvmfwHostTestLib"],
+}

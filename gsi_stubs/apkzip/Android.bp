@@ -1,0 +1,32 @@
+// vendored from packages/modules/Virtualization/libs/apkzip. the
+// virtualization sources are excluded from the gsi manifest sync but the
+// vendored apkverify crate depends on it, so it is reproduced here with
+// the test module dropped.
+
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+rust_defaults {
+    name: "libapkzip.defaults",
+    crate_name: "apkzip",
+    defaults: ["avf_build_flags_rust"],
+    edition: "2021",
+    srcs: ["src/ziputil.rs"],
+    rustlibs: [
+        "libanyhow",
+        "libbytes",
+        "liblog_rust",
+        "libzip",
+    ],
+}
+
+rust_library {
+    name: "libapkzip",
+    defaults: ["libapkzip.defaults"],
+    host_supported: true,
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.virt",
+    ],
+}

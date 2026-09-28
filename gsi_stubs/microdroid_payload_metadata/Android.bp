@@ -1,0 +1,32 @@
+// vendored from packages/modules/Virtualization/libs/libmicrodroid_payload_metadata.
+// the virtualization sources are excluded from the gsi manifest sync but
+// apexd links against the metadata protobuf library, so the cc variant is
+// reproduced here with the java and rust variants dropped.
+
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+cc_defaults {
+    name: "microdroid_metadata_default",
+    defaults: ["avf_build_flags_cc"],
+    host_supported: true,
+    srcs: [
+        "metadata.proto",
+        "metadata.cc",
+    ],
+    shared_libs: [
+        "libbase",
+        "liblog",
+    ],
+    export_include_dirs: ["include"],
+}
+
+cc_library_static {
+    name: "lib_microdroid_metadata_proto",
+    proto: {
+        export_proto_headers: true,
+        type: "full",
+    },
+    defaults: ["microdroid_metadata_default"],
+}

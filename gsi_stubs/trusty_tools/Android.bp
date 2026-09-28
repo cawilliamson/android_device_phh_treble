@@ -1,0 +1,12 @@
+// vendored from packages/modules/Virtualization guest/trusty/tools. the
+// virtualization sources are excluded from the gsi manifest sync but the
+// trusty memshare vm instance id generator still references the tool.
+
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+python_binary_host {
+    name: "gen_instance_id_for_vm_with_trusted_hal",
+    srcs: ["gen_instance_id_for_vm_with_trusted_hal.py"],
+}

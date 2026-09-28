@@ -1,0 +1,35 @@
+// vendored from packages/modules/Virtualization/libs/cborutil. the
+// virtualization sources are excluded from the gsi manifest sync but
+// external/gsc-utils boot_param_test links against libcbor_util, so the
+// crate is reproduced here with the nostd variant dropped.
+
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+rust_defaults {
+    name: "libcbor_util_defaults",
+    crate_name: "cbor_util",
+    srcs: ["src/lib.rs"],
+    defaults: ["avf_build_flags_rust"],
+    prefer_rlib: true,
+    apex_available: [
+        "com.android.virt",
+    ],
+}
+
+rust_library {
+    name: "libcbor_util",
+    defaults: ["libcbor_util_defaults"],
+    host_supported: true,
+    features: [
+        "std",
+    ],
+    rustlibs: [
+        "libciborium",
+        "libcoset",
+        "liblog_rust",
+        "libserde",
+    ],
+    vendor_available: true,
+}

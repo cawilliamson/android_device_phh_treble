@@ -1,0 +1,31 @@
+// vendored from packages/modules/Virtualization/libs/devicemapper. the
+// virtualization sources are excluded from the gsi manifest sync but
+// system/memory/mmd links against libdm_rust, so the crate is reproduced
+// here with the test module dropped.
+
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+rust_defaults {
+    name: "libdm_rust.defaults",
+    crate_name: "dm",
+    defaults: ["avf_build_flags_rust"],
+    srcs: ["src/lib.rs"],
+    edition: "2021",
+    rustlibs: [
+        "libanyhow",
+        "libbitflags",
+        "liblibc",
+        "libhex",
+        "libnix",
+        "libuuid",
+        "libzerocopy",
+    ],
+}
+
+rust_library {
+    name: "libdm_rust",
+    defaults: ["libdm_rust.defaults"],
+    host_supported: true,
+}
