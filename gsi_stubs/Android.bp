@@ -1,0 +1,59 @@
+// stub soong defaults for modules outside the virtualization tree that
+// reference the android virtualization framework build flags. the
+// virtualization sources are excluded from the gsi manifest sync, so the
+// definitions that normally live in packages/modules/Virtualization are
+// reproduced here with every feature flag in its default (disabled) state.
+
+cc_defaults {
+    name: "avf_build_flags_cc",
+}
+
+rust_defaults {
+    name: "avf_build_flags_rust",
+}
+
+genrule_defaults {
+    name: "dts_to_dtb",
+    tools: ["dtc"],
+    cmd: "FILES=($(in)) && $(location dtc) -@ -I dts -O dtb $${FILES[-1]} -o $(out)",
+}
+
+// stub trusty dirgroup for the tree that used to live at
+// packages/modules/Virtualization/libs. the trusty build aggregates these
+// dirgroups to detect source changes; the virtualization sources are
+// excluded from the gsi manifest sync, so the group points at the vendored
+// stubs directory instead.
+
+dirgroup {
+    name: "trusty_dirgroup_packages_modules_virtualization_libs",
+    dirs: ["."],
+    visibility: ["//trusty/vendor/google/aosp/scripts"],
+}
+
+// stub apexes for the virtualization apex names. the apexes themselves are
+// never built or installed on the gsi, but modules across the tree still
+// list the names in apex_available and soong validates those against
+// existing modules, so the names are registered as disabled stubs.
+
+apex {
+    name: "com.android.virt",
+    enabled: false,
+}
+
+apex {
+    name: "com.android.compos",
+    enabled: false,
+}
+
+apex {
+    name: "com.android.microfuchsia",
+    enabled: false,
+}
+
+// the virtualization tree defined the empty_file filegroup consumed by the
+// trusty vm image modules; reproduce it here with a placeholder file.
+
+filegroup {
+    name: "empty_file",
+    srcs: ["empty.placeholder"],
+}
