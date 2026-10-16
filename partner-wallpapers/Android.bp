@@ -7,4 +7,9 @@ android_app {
     manifest: "AndroidManifest.xml",
     sdk_version: "current",
     export_package_resources: true,
+    static_libs: ["com.google.android.material_material"],
+    optimize: {
+        enabled: true,
+        shrink_resources: true,
+    },
 }

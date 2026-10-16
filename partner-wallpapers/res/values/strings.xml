@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RestlessOS Wallpapers</string>
+    <string name="offline_title">Internet connection required</string>
+    <string name="offline_summary">Wallpapers are downloaded from the RestlessOS wallpaper repository. Connect to the internet to browse them.</string>
+    <string name="retry">Retry</string>
+    <string name="download_failed">Download failed</string>
+    <string name="variant_default">Default</string>
+    <string name="size_mb">%.1f MB</string>
+</resources>
